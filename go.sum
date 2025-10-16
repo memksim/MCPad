@@ -1,0 +1,6 @@
+github.com/Netflix/go-env v0.1.2 h1:0DRoLR9lECQ9Zqvkswuebm3jJ/2enaDX6Ei8/Z+EnK0=
+github.com/Netflix/go-env v0.1.2/go.mod h1:WlIhYi++8FlKNJtrop1mjXYAJMzv1f43K4MqCoh0yGE=
+github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1 h1:wG8n/XJQ07TmjbITcGiUaOtXxdrINDz1b0J1w0SzqDc=
+github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1/go.mod h1:A2S0CWkNylc2phvKXWBBdD3K0iGnDBGbzRpISP2zBl8=
+github.com/modelcontextprotocol/go-sdk v1.0.0 h1:Z4MSjLi38bTgLrd/LjSmofqRqyBiVKRyQSJgw8q8V74=
+github.com/modelcontextprotocol/go-sdk v1.0.0/go.mod h1:nYtYQroQ2KQiM0/SbyEPUWQ6xs4B95gJjEalc9AQyOs=
