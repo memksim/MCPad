@@ -1,17 +1,20 @@
 package com.memksim.bot
 
 import com.github.kotlintelegrambot.entities.ChatId
+import com.memksim.agent.Agent
 import com.github.kotlintelegrambot.entities.User as TelegramUser
 import com.memksim.data.UserStorage
 import com.memksim.user.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class Controller(
     private val storage: UserStorage,
+    private val agent: Agent,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default)
 
@@ -31,6 +34,17 @@ class Controller(
             sendText(chatId, "Привет! Приятно познакомиться, ${user.firstName}")
         } ?: {
             sendText(chatId, "Привет! Не могу получить информацию о тебе. Повтори попытку позже.")
+        }
+    }
+
+    fun handleText(chatId: ChatId.Id, text: String?) {
+        text?.let { text ->
+            scope.launch {
+                val answer = async { agent.askAgent(text) }
+                sendText(chatId, answer.await())
+            }
+        } ?: {
+            sendText(chatId, "Не могу прочитать твое сообщение. Повтори попытку позже.")
         }
     }
 

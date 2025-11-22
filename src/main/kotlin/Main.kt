@@ -1,5 +1,6 @@
 package com.memksim
 
+import com.memksim.agent.Agent
 import com.memksim.bot.Bot
 import com.memksim.bot.Controller
 import com.memksim.data.UserStorage
@@ -10,7 +11,7 @@ fun main() {
 
     val bot = Bot(
         token = dotenv["TELEGRAM_TOKEN"],
-        controller = Controller(UserStorage())
+        controller = Controller(UserStorage(), Agent())
     )
     bot.start()
 }
