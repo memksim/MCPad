@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class Bot(
+internal class Bot(
     private val token: String,
     private val controller: Controller
 ) {

@@ -1,10 +1,11 @@
 package com.memksim.bot
 
 import com.github.kotlintelegrambot.entities.ChatId
-import com.memksim.agent.Agent
+import com.memksim.Strings
+import com.memksim.api.agent.Agent
+import com.memksim.api.users.User
+import com.memksim.api.users.UsersRepository
 import com.github.kotlintelegrambot.entities.User as TelegramUser
-import com.memksim.data.UserStorage
-import com.memksim.user.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -12,8 +13,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class Controller(
-    private val storage: UserStorage,
+internal class Controller(
+    private val repository: UsersRepository,
     private val agent: Agent,
 ) {
     private val scope = CoroutineScope(Dispatchers.Default)
@@ -23,17 +24,16 @@ class Controller(
 
     fun handleStart(chatId: ChatId.Id, user: TelegramUser?) {
         user?.let { user ->
-            storage.getUser(user.id)?.let {
-                sendText(chatId, "Привет! Рад снова тебя видеть, ${user.firstName}")
-                return@handleStart
+            scope.launch(Dispatchers.IO) {
+                repository.getUserByTelegramId(user.id)?.let {
+                    sendText(chatId, Strings.Greet.ALREADY_KNOWN.format(user.firstName))
+                    return@launch
+                }
+                repository.saveUser(User(telegramId = user.id, name = "${user.firstName} ${user.lastName}"))
+                sendText(chatId, Strings.Greet.NEW_USER.format(user.firstName))
             }
-            storage.addUser(User(
-                id = user.id,
-                name = "${user.firstName} ${user.lastName}",
-            ))
-            sendText(chatId, "Привет! Приятно познакомиться, ${user.firstName}")
         } ?: {
-            sendText(chatId, "Привет! Не могу получить информацию о тебе. Повтори попытку позже.")
+            sendText(chatId, Strings.Greet.NO_DATA)
         }
     }
 
@@ -44,7 +44,7 @@ class Controller(
                 sendText(chatId, answer.await())
             }
         } ?: {
-            sendText(chatId, "Не могу прочитать твое сообщение. Повтори попытку позже.")
+            sendText(chatId, Strings.Message.CANNOT_READ)
         }
     }
 
