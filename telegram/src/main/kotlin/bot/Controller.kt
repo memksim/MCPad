@@ -37,6 +37,17 @@ internal class Controller(
         }
     }
 
+    fun handleRestart(chatId: ChatId.Id, user: TelegramUser?) {
+        user?.let { user ->
+            scope.launch(Dispatchers.IO) {
+                repository.deleteUserByTelegramId(user.id)
+                sendText(chatId, Strings.Restart.USER_CLEARED)
+            }
+        } ?: {
+            sendText(chatId, Strings.Restart.NO_DATA)
+        }
+    }
+
     fun handleText(chatId: ChatId.Id, text: String?) {
         text?.let { text ->
             scope.launch {

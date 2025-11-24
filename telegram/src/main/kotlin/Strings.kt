@@ -2,13 +2,18 @@ package com.memksim
 
 object Strings {
     object Greet {
-        const val ALREADY_KNOWN = "Привет! Рад снова тебя видеть, %s"
-        const val NEW_USER = "Привет! Приятно познакомиться, %s"
-        const val NO_DATA = "Привет! Не могу получить информацию о тебе. Повтори попытку позже."
+        const val ALREADY_KNOWN = "Здравствуйте! Рад снова вас видеть, %s"
+        const val NEW_USER = "Здравствуйте! Приятно познакомиться, %s"
+        const val NO_DATA = "Здравствуйте! Не удалось получить данные о пользователе. Повторите попытку позже."
     }
 
     object Message {
-        const val CANNOT_READ = "Не могу прочитать твое сообщение. Повтори попытку позже."
+        const val CANNOT_READ = "Не могу прочитать сообщение пользователя. Повторите попытку позже."
+    }
+
+    object Restart {
+        const val USER_CLEARED = "Пользовательские данные удалены. Отправьте команду /start для начала работы."
+        const val NO_DATA = "Не удалось получить данные о пользователе. Повторите попытку позже."
     }
 
 }

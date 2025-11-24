@@ -28,6 +28,9 @@ internal class Bot(
             handleCommand(Command.START) {
                 controller.handleStart(ChatId.fromId(message.chat.id), message.from)
             }
+            handleCommand(Command.RESTART) {
+                controller.handleRestart(ChatId.fromId(message.chat.id), message.from)
+            }
         }
     }
 
