@@ -6,13 +6,13 @@ import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.Database as ExposedDb
 
-internal class DatabaseImpl() : Database {
-    override fun connect(url: String, user: String, password: String, driver: String) {
+internal class PostgresqlDatabase() : Database {
+    override fun connect(url: String, user: String, password: String, driver: String?) {
         ExposedDb.connect(
             url = url,
             user = user,
             password = password,
-            driver = driver
+            driver = driver ?: DEFAULT_DRIVER
         )
     }
 
@@ -22,4 +22,7 @@ internal class DatabaseImpl() : Database {
         }
     }
 
+    companion object {
+        const val DEFAULT_DRIVER = "org.postgresql.Driver"
+    }
 }

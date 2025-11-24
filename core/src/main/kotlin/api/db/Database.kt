@@ -5,11 +5,7 @@ interface Database {
         url: String,
         user: String,
         password: String,
-        driver: String = DEFAULT_DRIVER,
+        driver: String? = null,
     )
     fun createTables()
-
-    companion object {
-        const val DEFAULT_DRIVER = "org.postgresql.Driver"
-    }
 }
