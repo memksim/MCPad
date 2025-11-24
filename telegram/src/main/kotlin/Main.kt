@@ -9,6 +9,14 @@ import io.github.cdimascio.dotenv.dotenv
 fun main() {
     val dotenv = dotenv()
 
+    val db = SingleInstanceProvider.provideDatabase()
+    db.connect(
+        url = dotenv["DATABASE_URL"],
+        user = dotenv["DATABASE_USER"],
+        password = dotenv["DATABASE_USER_PASSWORD"]
+    )
+    db.createTables()
+
     val bot = Bot(
         token = dotenv["TELEGRAM_TOKEN"],
         controller = Controller(
