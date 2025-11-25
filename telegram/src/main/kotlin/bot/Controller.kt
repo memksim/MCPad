@@ -25,16 +25,15 @@ internal class Controller(
     fun handleStart(chatId: ChatId.Id, user: TelegramUser?) {
         user?.let { user ->
             scope.launch(Dispatchers.IO) {
-                repository.getUserByTelegramId(user.id)?.let {
+                if (checkUser(user.id)) {
                     sendText(chatId, Strings.Greet.ALREADY_KNOWN.format(user.firstName))
                     return@launch
                 }
+
                 repository.saveUser(User(telegramId = user.id, name = "${user.firstName} ${user.lastName}"))
                 sendText(chatId, Strings.Greet.NEW_USER.format(user.firstName))
             }
-        } ?: {
-            sendText(chatId, Strings.Greet.NO_DATA)
-        }
+        } ?: sendText(chatId, Strings.Error.NO_DATA)
     }
 
     fun handleRestart(chatId: ChatId.Id, user: TelegramUser?) {
@@ -43,26 +42,34 @@ internal class Controller(
                 repository.deleteUserByTelegramId(user.id)
                 sendText(chatId, Strings.Clear.USER_CLEARED)
             }
-        } ?: {
-            sendText(chatId, Strings.Clear.NO_DATA)
-        }
+        } ?: sendText(chatId, Strings.Error.NO_DATA)
     }
 
-    fun handleText(chatId: ChatId.Id, text: String?) {
-        text?.let { text ->
-            scope.launch {
-                val answer = async { agent.askAgent(text) }
-                sendText(chatId, answer.await())
+    fun handleText(chatId: ChatId.Id, user: TelegramUser?, text: String?) {
+        user?.let { user ->
+            text?.let { text ->
+                scope.launch {
+                    if (!checkUser(user.id)) {
+                        sendText(chatId, Strings.Error.NEED_AUTHORIZE)
+                        return@launch
+                    }
+                    val answer = async { agent.askAgent(text) }
+                    sendText(chatId, answer.await())
+                }
+            } ?: {
+                sendText(chatId, Strings.Error.MESSAGE_CANNOT_READ)
             }
-        } ?: {
-            sendText(chatId, Strings.Message.CANNOT_READ)
-        }
+        } ?: sendText(chatId, Strings.Error.NO_DATA)
     }
 
     private fun sendText(chatId: ChatId.Id, text: String) {
         scope.launch {
             _actions.emit(Action.SendTextMessage(chatId = chatId, message = text))
         }
+    }
+
+    private suspend fun checkUser(telegramId: Long): Boolean {
+        return repository.getUserByTelegramId(telegramId) != null
     }
 
 }

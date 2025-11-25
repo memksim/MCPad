@@ -23,7 +23,7 @@ internal class Bot(
 
         dispatch {
             message(Filter.Text) {
-                controller.handleText(ChatId.fromId(message.chat.id), message.text)
+                controller.handleText(ChatId.fromId(message.chat.id), message.from, message.text)
             }
             handleCommand(Command.START) {
                 controller.handleStart(ChatId.fromId(message.chat.id), message.from)
@@ -38,9 +38,11 @@ internal class Bot(
         bot.startPolling()
         subscribeMessages()
         scope.launch {
-            bot.setMyCommands(listOf(
-                Command.CLEAR.toBotCommand()
-            ))
+            bot.setMyCommands(
+                listOf(
+                    Command.CLEAR.toBotCommand()
+                )
+            )
         }
     }
 
@@ -51,6 +53,7 @@ internal class Bot(
                     is Action.SendTextMessage -> {
                         bot.sendMessage(action.chatId, action.message)
                     }
+
                     else -> {}
                 }
             }
