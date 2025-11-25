@@ -11,9 +11,13 @@ object Strings {
         const val CANNOT_READ = "Не могу прочитать сообщение пользователя. Повторите попытку позже."
     }
 
-    object Restart {
+    object Clear {
         const val USER_CLEARED = "Пользовательские данные удалены. Отправьте команду /start для начала работы."
         const val NO_DATA = "Не удалось получить данные о пользователе. Повторите попытку позже."
     }
 
+    object Command {
+        const val START = "Сохранить информацию о пользователе"
+        const val CLEAR = "Очистить информацию о пользователе"
+    }
 }

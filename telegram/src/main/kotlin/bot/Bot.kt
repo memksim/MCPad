@@ -28,7 +28,7 @@ internal class Bot(
             handleCommand(Command.START) {
                 controller.handleStart(ChatId.fromId(message.chat.id), message.from)
             }
-            handleCommand(Command.RESTART) {
+            handleCommand(Command.CLEAR) {
                 controller.handleRestart(ChatId.fromId(message.chat.id), message.from)
             }
         }
@@ -37,12 +37,22 @@ internal class Bot(
     fun start() {
         bot.startPolling()
         subscribeMessages()
+        scope.launch {
+            bot.setMyCommands(listOf(
+                Command.CLEAR.toBotCommand()
+            ))
+        }
     }
 
     private fun subscribeMessages() {
         scope.launch {
-            controller.messages.collect { (chatId, text) ->
-                bot.sendMessage(chatId, text)
+            controller.actions.collect { action ->
+                when (action) {
+                    is Action.SendTextMessage -> {
+                        bot.sendMessage(action.chatId, action.message)
+                    }
+                    else -> {}
+                }
             }
         }
     }

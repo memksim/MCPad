@@ -9,8 +9,8 @@ import com.github.kotlintelegrambot.entities.User as TelegramUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 internal class Controller(
@@ -19,8 +19,8 @@ internal class Controller(
 ) {
     private val scope = CoroutineScope(Dispatchers.Default)
 
-    private val _messages = MutableSharedFlow<Pair<ChatId.Id, String>>()
-    val messages = _messages.asSharedFlow()
+    private val _actions = MutableStateFlow<Action?>(null)
+    val actions = _actions.asStateFlow()
 
     fun handleStart(chatId: ChatId.Id, user: TelegramUser?) {
         user?.let { user ->
@@ -41,10 +41,10 @@ internal class Controller(
         user?.let { user ->
             scope.launch(Dispatchers.IO) {
                 repository.deleteUserByTelegramId(user.id)
-                sendText(chatId, Strings.Restart.USER_CLEARED)
+                sendText(chatId, Strings.Clear.USER_CLEARED)
             }
         } ?: {
-            sendText(chatId, Strings.Restart.NO_DATA)
+            sendText(chatId, Strings.Clear.NO_DATA)
         }
     }
 
@@ -61,7 +61,7 @@ internal class Controller(
 
     private fun sendText(chatId: ChatId.Id, text: String) {
         scope.launch {
-            _messages.emit(chatId to text)
+            _actions.emit(Action.SendTextMessage(chatId = chatId, message = text))
         }
     }
 
