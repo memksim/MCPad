@@ -10,6 +10,10 @@ object Strings {
         const val USER_CLEARED = "Пользовательские данные удалены. \nОтправьте команду /start для начала работы."
     }
 
+    object Message {
+        const val THINK = "%s думаю..."
+    }
+
     object Command {
         const val START = "Сохранить информацию о пользователе"
         const val CLEAR = "Очистить информацию о пользователе"

@@ -5,13 +5,16 @@ import com.memksim.Strings
 import com.memksim.api.agent.Agent
 import com.memksim.api.users.User
 import com.memksim.api.users.UsersRepository
+import com.memksim.emojis
 import com.github.kotlintelegrambot.entities.User as TelegramUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class Controller(
     private val repository: UsersRepository,
@@ -53,8 +56,7 @@ internal class Controller(
                         sendText(chatId, Strings.Error.NEED_AUTHORIZE)
                         return@launch
                     }
-                    val answer = async { agent.askAgent(text) }
-                    sendText(chatId, answer.await())
+                    askAgent(chatId, text)
                 }
             } ?: {
                 sendText(chatId, Strings.Error.MESSAGE_CANNOT_READ)
@@ -70,6 +72,17 @@ internal class Controller(
 
     private suspend fun checkUser(telegramId: Long): Boolean {
         return repository.getUserByTelegramId(telegramId) != null
+    }
+
+    private suspend fun askAgent(chatId: ChatId.Id, text: String) = withContext(Dispatchers.Default) {
+        val answer = async { agent.askAgent(text) }
+        launch {
+            while (answer.isActive) {
+                sendText(chatId, Strings.Message.THINK.format(String(Character.toChars(emojis.random()))))
+                delay(15_000)
+            }
+        }
+        sendText(chatId, answer.await())
     }
 
 }
