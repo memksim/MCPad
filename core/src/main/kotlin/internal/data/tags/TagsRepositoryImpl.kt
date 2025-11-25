@@ -2,17 +2,21 @@ package com.memksim.internal.data.tags
 
 import com.memksim.api.tags.Tag
 import com.memksim.api.tags.TagsRepository
+import com.memksim.internal.data.users.UsersTable
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
-import org.jetbrains.exposed.v1.jdbc.select
+import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.update
 
 internal class TagsRepositoryImpl : TagsRepository {
     override suspend fun getUserTags(userId: Int): List<Tag> =
         suspendTransaction {
-            return@suspendTransaction TagsTable.select(TagsTable.user eq userId).map {
+            return@suspendTransaction TagsTable
+                .selectAll()
+                .where { TagsTable.user eq userId }
+                .map {
                 Tag(
                     id = it[TagsTable.id].value,
                     userId = it[TagsTable.user].value,
