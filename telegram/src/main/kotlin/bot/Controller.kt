@@ -14,7 +14,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 internal class Controller(
     private val repository: UsersRepository,
@@ -74,15 +73,14 @@ internal class Controller(
         return repository.getUserByTelegramId(telegramId) != null
     }
 
-    private suspend fun askAgent(chatId: ChatId.Id, text: String) = withContext(Dispatchers.Default) {
-        val answer = async { agent.askAgent(text) }
-        launch {
-            while (answer.isActive) {
-                sendText(chatId, Strings.Message.THINK.format(String(Character.toChars(emojis.random()))))
-                delay(15_000)
-            }
-        }
-        sendText(chatId, answer.await())
+    private suspend fun askAgent(chatId: ChatId.Id, text: String) = runCatching {
+        sendText(chatId, Strings.Message.THINK.format(String(Character.toChars(emojis.random()))))
+        agent.askAgent(text)
+    }.onSuccess { response ->
+        sendText(chatId, response)
+    }.onFailure {
+        delay(1_000)
+        sendText(chatId, Strings.Error.MESSAGE_CANNOT_ASK)
     }
 
 }
