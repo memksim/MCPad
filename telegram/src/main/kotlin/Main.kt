@@ -20,7 +20,8 @@ fun main() {
     val bot = Bot(
         token = dotenv["TELEGRAM_TOKEN"],
         controller = Controller(
-            repository = SingleInstanceProvider.provideUsersRepository(),
+            usersRepository = SingleInstanceProvider.provideUsersRepository(),
+            tagsRepository = SingleInstanceProvider.provideTagsRepository(),
             agent = SingleInstanceProvider.provideAgent()
         )
     )

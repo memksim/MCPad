@@ -2,7 +2,6 @@ package com.memksim.internal.data.tags
 
 import com.memksim.api.tags.Tag
 import com.memksim.api.tags.TagsRepository
-import com.memksim.internal.data.users.UsersTable
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
@@ -17,12 +16,12 @@ internal class TagsRepositoryImpl : TagsRepository {
                 .selectAll()
                 .where { TagsTable.user eq userId }
                 .map {
-                Tag(
-                    id = it[TagsTable.id].value,
-                    userId = it[TagsTable.user].value,
-                    title = it[TagsTable.title],
-                )
-            }
+                    Tag(
+                        id = it[TagsTable.id].value,
+                        userId = it[TagsTable.user].value,
+                        title = it[TagsTable.title],
+                    )
+                }
         }
 
     override suspend fun createTag(tag: Tag): Unit =

@@ -14,10 +14,21 @@ object Strings {
         const val THINK = "%s думаю..."
     }
 
+    object Tags {
+        const val EMPTY = "У вас нет тегов. Но вы всегда можете создать их."
+        const val DATA = "Ваши теги: "
+    }
+
     object Command {
         const val START = "Сохранить информацию о пользователе"
         const val CLEAR = "Очистить информацию о пользователе"
         const val TAGS = "Просмотр тегов"
+    }
+
+    object Keyboard {
+        const val CREATE = "Новый тег"
+        const val EDIT = "Редактировать тег"
+        const val DELETE = "Удалить тег"
     }
 
     object Error {
