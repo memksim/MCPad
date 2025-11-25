@@ -32,7 +32,13 @@ internal class Controller(
                     return@launch
                 }
 
-                repository.saveUser(User(telegramId = user.id, name = "${user.firstName} ${user.lastName}"))
+                repository.saveUser(
+                    User(
+                        telegramId = user.id,
+                        firstName = user.firstName,
+                        lastName = user.lastName
+                    )
+                )
                 sendText(chatId, Strings.Greet.NEW_USER.format(user.firstName))
             }
         } ?: sendText(chatId, Strings.Error.NO_DATA)

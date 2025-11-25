@@ -17,6 +17,7 @@ object Strings {
     object Command {
         const val START = "Сохранить информацию о пользователе"
         const val CLEAR = "Очистить информацию о пользователе"
+        const val TAGS = "Просмотр тегов"
     }
 
     object Error {

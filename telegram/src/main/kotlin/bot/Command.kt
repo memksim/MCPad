@@ -9,6 +9,7 @@ import com.memksim.Strings
 internal enum class Command(val text: String, val description: String) {
     START("start", Strings.Command.START),
     CLEAR("clear", Strings.Command.CLEAR),
+    TAGS("tags", Strings.Command.TAGS),
 }
 
 internal fun Dispatcher.handleCommand(command: Command, handleCommand: HandleCommand) = command(command.text, handleCommand)

@@ -1,6 +1,7 @@
 package com.memksim.internal.data
 
 import com.memksim.api.db.Database
+import com.memksim.internal.data.tags.TagsTable
 import com.memksim.internal.data.users.UsersTable
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -19,6 +20,7 @@ internal class PostgresqlDatabase() : Database {
     override fun createTables() {
         transaction {
             SchemaUtils.create(UsersTable)
+            SchemaUtils.create(TagsTable)
         }
     }
 
